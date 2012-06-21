@@ -1,0 +1,11 @@
+deferred_request_response:
+  pattern: /{id}
+  defaults: { _controller: ZeroemDeferredRequestBundle:Api:deferredResponse }
+  requirements:
+    _method: GET
+
+deferred_request_status:
+  pattern: /{id}/status
+  defaults: { _controller: ZeroemDeferredRequestBundle:Api:deferredRequestStatus }
+  requirements:
+    _method: GET

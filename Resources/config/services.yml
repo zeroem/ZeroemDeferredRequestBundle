@@ -1,0 +1,5 @@
+services:
+  deferred_request_annotation_driver:
+    class: Zeroem\DeferredRequestBundle\Annotation\Driver\AnnotationDriver
+    tags: [{name: kernel.event_listener, event: kernel.controller, method: onKernelController}]
+    arguments: [@annotation_reader]
