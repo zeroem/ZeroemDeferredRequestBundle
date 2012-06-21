@@ -1,8 +1,10 @@
 <?php
 
 namespace Zeroem\DeferredRequestBundle\Annotation\Driver;
-use Zeroem\DeferredRequestBundle\Annotation\Defer;
 
+use Zeroem\DeferredRequestBundle\Annotation\Defer;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Zeroem\DeferredRequestBundle\Controller\DeferController;
 
 class AnnotationDriver
 {
@@ -10,11 +12,6 @@ class AnnotationDriver
 
   private $disabled = false;
   private $disabledForNextOnly = false;
-
-  private static $deferController = array(
-    "\\Zeroem\\DeferredRequestBundle\\Controller\\DeferController",
-    "deferRequest"
-  );
 
   public function __construct($reader)
   {
@@ -27,19 +24,19 @@ class AnnotationDriver
   public function onKernelController(FilterControllerEvent $event)
   {
     if(!$this->isDisabled()) {
-      $controller_parts = $event->getController();
+      $controller = $event->getController();
     
-      if(is_array($controller_parts)) {
+      if(is_callable($controller)) {
 	$object = new \ReflectionObject($controller[0]);
 	$method = $object->getMethod($controller[1]);
 
 	$defer = $this->hasDeferAnnotation($this->reader->getClassAnnotations($object));
 	if(!$defer) {
-	  $defer = $this->checkANnotations($this->reader->getMethodAnnotations($method));
+	  $defer = $this->hasDeferAnnotation($this->reader->getMethodAnnotations($method));
 	}
 
 	if($defer) {
-	  $evet->setController(self::$deferredController);
+	  $event->setController($this->getDeferController());
 	}
       }
     }
@@ -74,7 +71,7 @@ class AnnotationDriver
   }
 
   private function hasDeferAnnotation($annotations) {
-      foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
+      foreach ($annotations as $annotation) {
         if($annotation instanceof Defer) {
 	  return true;
         }
@@ -87,7 +84,10 @@ class AnnotationDriver
     return $this->disabled || $this->disabledForNextOnly;
   }
 
-  public static function getDeferController() {
-    return self::$deferController;
+  public function getDeferController() {
+    return array(
+      new DeferController(),
+      "deferRequest"
+    );
   }
 }

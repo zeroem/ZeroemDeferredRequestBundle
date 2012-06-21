@@ -1,10 +1,10 @@
 <?php
 
-namspace Zeroem\DeferredRequestBundle\Annotation;
+namespace Zeroem\DeferredRequestBundle\Annotation;
 
 /**
  * @Annotation
- * @Target("CLASS")
+ * @Target({"METHOD","CLASS"})
  */
 final class Defer
 {
