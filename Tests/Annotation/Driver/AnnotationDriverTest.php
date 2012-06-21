@@ -2,8 +2,8 @@
 
 namespace Zeroem\DeferredRequestBundle\Tests\Annotation\Driver;
 
-use Zeroem\DeferredRequestBundle\Tests\Annotation\DeferredClassFixture;
-use Zeroem\DeferredRequestBundle\Tests\Annotation\DeferredMethodFixture;
+use Zeroem\DeferredRequestBundle\Tests\Annotation\Fixture\DeferredClass;
+use Zeroem\DeferredRequestBundle\Tests\Annotation\Fixture\DeferredMethod;
 use Zeroem\DeferredRequestBundle\Annotation\Driver\AnnotationDriver;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -23,7 +23,7 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
   {
     $event = $this->getFilterControllerEvent(
       array(
-	new DeferredClassFixture(),
+	new DeferredClass(),
 	'doNothing'
       )
     );
@@ -38,9 +38,13 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
   }
 
   public function testMethodAnnotation() {
+
+    $deferredMethod = new DeferredMethod();
+
+    // Test Deferred Method
     $event = $this->getFilterControllerEvent(
       array(
-	new DeferredMethodFixture(),
+	$deferredMethod,
 	'doNothing'
       )
     );
@@ -52,6 +56,22 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
 
     $this->assertInstanceOf(get_class($expected[0]),$controller[0]);
     $this->assertEquals($expected[1],$controller[1]);
+
+    // Test Not Deferred Method
+    $event = $this->getFilterControllerEvent(
+      array(
+	$deferredMethod,
+	'doSomething'
+      )
+    );
+
+    $this->driver->onKernelController($event);
+
+    $controller = $event->getController();
+
+    $this->assertInstanceOf(get_class($deferredMethod),$controller[0]);
+    $this->assertEquals("doSomething",$controller[1]);
+
   }
 
   /**

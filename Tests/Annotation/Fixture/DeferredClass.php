@@ -1,13 +1,13 @@
 <?php
 
-namespace Zeroem\DeferredRequestBundle\Tests\Annotation;
+namespace Zeroem\DeferredRequestBundle\Tests\Annotation\Fixture;
 
 use Zeroem\DeferredRequestBundle\Annotation\Defer;
 
 /**
  *@Defer
  */
-class DeferredClassFixture
+class DeferredClass
 {
   public function doNothing() {
 
