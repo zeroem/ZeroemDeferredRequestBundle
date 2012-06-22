@@ -34,7 +34,7 @@ class Request
     /**
      * @var datetimetz $finished
      *
-     * @ORM\Column(name="finished", type="datetimetz")
+     * @ORM\Column(name="finished", type="datetimetz", nullable=true)
      */
     private $finished;
 
