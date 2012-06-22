@@ -28,17 +28,17 @@ class AnnotationDriver
       $controller = $event->getController();
     
       if(is_callable($controller)) {
-	$object = new \ReflectionObject($controller[0]);
-	$method = $object->getMethod($controller[1]);
+        $object = new \ReflectionObject($controller[0]);
+        $method = $object->getMethod($controller[1]);
 
-	$defer = $this->hasDeferAnnotation($this->reader->getClassAnnotations($object));
-	if(!$defer) {
-	  $defer = $this->hasDeferAnnotation($this->reader->getMethodAnnotations($method));
-	}
+        $defer = $this->hasDeferAnnotation($this->reader->getClassAnnotations($object));
+        if(!$defer) {
+          $defer = $this->hasDeferAnnotation($this->reader->getMethodAnnotations($method));
+        }
 
-	if($defer) {
-	  $event->setController($this->getDeferController());
-	}
+        if($defer) {
+          $event->setController($this->getDeferController());
+        }
       }
     }
 
@@ -72,13 +72,13 @@ class AnnotationDriver
   }
 
   private function hasDeferAnnotation($annotations) {
-      foreach ($annotations as $annotation) {
-        if($annotation instanceof Defer) {
-	  return true;
-        }
+    foreach ($annotations as $annotation) {
+      if($annotation instanceof Defer) {
+        return true;
       }
+    }
 
-      return false;
+    return false;
   }
 
   private function isDisabled() {
