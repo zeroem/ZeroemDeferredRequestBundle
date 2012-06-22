@@ -5,7 +5,7 @@ namespace Zeroem\DeferredRequestBundle\Annotation\Driver;
 use Zeroem\DeferredRequestBundle\Annotation\Defer;
 use Zeroem\DeferredRequestBundle\Controller\DeferController;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 
 class AnnotationDriver
 {
@@ -14,7 +14,7 @@ class AnnotationDriver
   private $disabled = false;
   private $disabledForNextOnly = false;
 
-  public function __construct(AnnotationReader $reader)
+  public function __construct(Reader $reader)
   {
     $this->reader = $reader;
   }
