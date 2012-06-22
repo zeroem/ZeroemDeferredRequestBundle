@@ -19,7 +19,7 @@ class ProcessCommand extends ContainerAwareCommand
   }
 
   protected function execute(InputInterface $input, OutputInterface $output) {
-    $this->getContainer()->get('deferred_request_annotation_driver')->disableNextRequest();
+    $this->getContainer()->get('defer_request_annotation_driver')->disableNextRequest();
 
     $request_id = $input->getArgument('request-id');
     $em = $this
