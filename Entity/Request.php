@@ -85,6 +85,17 @@ class Request
         return $this->created;
     }
 
+
+    /**
+     * Get finished
+     *
+     * @return datetimetz 
+     */
+    public function getFinished()
+    {
+        return $this->finished;
+    }
+
     /**
      * Set request
      *
@@ -140,7 +151,6 @@ class Request
       }
     }
 
-
     /**
      * @ORM\PreUpdate
      */
@@ -148,5 +158,4 @@ class Request
     {
       $this->finished = new \DateTime();
     }
-
 }
