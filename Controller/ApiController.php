@@ -16,7 +16,15 @@ class ApiController extends Controller
     $entity = $this->getRequestEntity($id);
 
     if($entity->getResponse()) {
-      return $entity->getResponse();
+      $response = $entity->getResponse();
+
+      // modify cache headers as the response will never change
+      $response->setPublic();
+      $response->setMaxAge(600);
+      $response->setLastModified($entity->getFinished());
+      $response->isNotModified($this->getRequest());
+
+      return $response;
     }
 
     throw new NotFoundHttpException('Deferred Request does not have a response.');
