@@ -15,8 +15,8 @@
 
     "autoload": {
         "psr-0": {
-	    "Zeroem\\DeferredRequestBundle": ""
-	}
+            "Zeroem\\DeferredRequestBundle": ""
+        }
     },
 
     "target-dir": "Zeroem/DeferredRequestBundle"
