@@ -1,6 +1,7 @@
 {
     "name": "zeroem/deferred-request-bundle",
     "description": "Utilities for deferring request processing to some point in the future",
+    "keywords": ["defer", "request", "bundle"],
     "license": "MIT",
     "authors": [
         {
