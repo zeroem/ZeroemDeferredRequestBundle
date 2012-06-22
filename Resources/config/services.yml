@@ -1,5 +1,13 @@
 services:
-  deferred_request_annotation_driver:
+  defer_request_annotation_driver:
     class: Zeroem\DeferredRequestBundle\Annotation\Driver\AnnotationDriver
     tags: [{name: kernel.event_listener, event: kernel.controller, method: onKernelController}]
-    arguments: [@annotation_reader]
+    arguments: [@annotation_reader, @defer_request_controller]
+
+  defer_response_builder:
+    class: Zeroem\DeferredRequestBundle\DeferResponseBuilder
+    arguments: [@router]
+
+  defer_request_controller:
+    class: Zeroem\DeferredRequestBundle\Controller\DeferController
+    arguments: [@doctrine.orm.default_entity_manager,@defer_response_builder]
