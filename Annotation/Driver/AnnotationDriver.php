@@ -4,19 +4,23 @@ namespace Zeroem\DeferredRequestBundle\Annotation\Driver;
 
 use Zeroem\DeferredRequestBundle\Annotation\Defer;
 use Zeroem\DeferredRequestBundle\Controller\DeferController;
+
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+
 use Doctrine\Common\Annotations\Reader;
 
 class AnnotationDriver
 {
   private $reader;
+  private $controller;
 
   private $disabled = false;
   private $disabledForNextOnly = false;
 
-  public function __construct(Reader $reader)
+  public function __construct(Reader $reader, DeferController $controller)
   {
     $this->reader = $reader;
+    $this->controller = $controller;
   }
 
   /**
@@ -42,7 +46,7 @@ class AnnotationDriver
       }
     }
 
-    $this->disableForNextOnly = false;
+    $this->disabledForNextOnly = false;
   }
 
   /**
@@ -58,17 +62,16 @@ class AnnotationDriver
    */
   public function enable() {
     $this->disabled = false;
-    $this->disableForNextOnly = false;
+    $this->disabledForNextOnly = false;
 
     return $this;
   }
 
-  
   /**
    * Disable Defer Annotations for the next request only
    */
   public function disableNextRequest() {
-    $this->disableForNextOnly = true;
+    $this->disabledForNextOnly = true;
   }
 
   private function hasDeferAnnotation($annotations) {
@@ -85,9 +88,9 @@ class AnnotationDriver
     return $this->disabled || $this->disabledForNextOnly;
   }
 
-  public function getDeferController() {
+  public function getDeferController($container=null) {
     return array(
-      new DeferController(),
+      $this->controller,
       "deferRequest"
     );
   }
