@@ -1,0 +1,23 @@
+{
+    "name": "zeroem/DeferredRequestBundle",
+    "description": "Utilities for deferring request processing to some point in the future",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Darrell Hamilton",
+            "email": "darrell.noice@gmail.com"
+        }
+    ],
+
+    "require": {
+        "symfony/symfony": "dev-master"
+    },
+
+    "autoload": {
+        "psr-0": {
+	    "Zeroem\\DeferredRequestBundle": "."
+	}
+    },
+
+    "target-dir": "Zeroem/DeferredRequestBundle"
+}
