@@ -1,5 +1,5 @@
 {
-    "name": "zeroem/DeferredRequestBundle",
+    "name": "zeroem/deferred-request-bundle",
     "description": "Utilities for deferring request processing to some point in the future",
     "license": "MIT",
     "authors": [
