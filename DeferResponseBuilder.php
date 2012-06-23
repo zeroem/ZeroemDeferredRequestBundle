@@ -13,8 +13,8 @@ class DeferResponseBuilder
   }
 
   public function buildResponse(Request $request) {
-    $response_url = $this->router->generate('defer_request_response', array('id'=>$request->getId()));
-    $monitor_url = $this->router->generate('defer_request_monitor',array('id'=>$request->getId()));
+    $response_url = $this->router->generate('defer_request_response', array('id'=>$request->getId()), true);
+    $monitor_url = $this->router->generate('defer_request_monitor',array('id'=>$request->getId()), true);
 
     $headers = array(
       "content-location" =>$response_url,
