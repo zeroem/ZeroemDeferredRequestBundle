@@ -4,7 +4,7 @@ namespace Zeroem\DeferredRequestBundle\Tests\Annotation\Driver;
 
 use Zeroem\DeferredRequestBundle\Tests\Annotation\Fixture\DeferredClass;
 use Zeroem\DeferredRequestBundle\Tests\Annotation\Fixture\DeferredMethod;
-use Zeroem\DeferredRequestBundle\Annotation\Driver\AnnotationDriver;
+use Zeroem\DeferredRequestBundle\Annotation\Driver\DeferDriver;
 use Zeroem\DeferredRequestBundle\DeferResponseBuilder;
 
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -12,9 +12,9 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
+class DeferDriverTest extends \PHPUnit_Framework_TestCase
 {
-  public function getAnnotationDriver() {
+  public function getDeferDriver() {
     $entity = $this->getMockForAbstractClass('Zeroem\DeferredRequestBundle\DeferredRequestInterface');
     $entity
       ->expects($this->any())
@@ -40,7 +40,7 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
       ->method('makeBody')
       ->will($this->returnValue('body'));
 
-    return new AnnotationDriver(
+    return new DeferDriver(
       new AnnotationReader(),
       $this->getMockEventDispatcher(),
       $persister,
@@ -61,7 +61,7 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
       )
     );
 
-    $driver = $this->getAnnotationDriver();
+    $driver = $this->getDeferDriver();
     $driver->onKernelController($event);
   }
 
@@ -79,7 +79,7 @@ class AnnotationDriverTest extends \PHPUnit_Framework_TestCase
       )
     );
 
-    $driver = $this->getAnnotationDriver();
+    $driver = $this->getDeferDriver();
     $driver->onKernelController($event);
   }
 
