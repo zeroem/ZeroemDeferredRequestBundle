@@ -2,6 +2,8 @@
 
 namespace Zeroem\DeferredRequestBundle\Entity;
 
+use Zeroem\DeferredRequestBundle\DeferredRequestInterface;
+
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -13,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks()
  */
-class Request
+class Request implements DeferredRequestInterface
 {
     /**
      * @var integer $id

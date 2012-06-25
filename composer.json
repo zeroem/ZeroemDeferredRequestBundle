@@ -11,7 +11,8 @@
     ],
 
     "require": {
-        "symfony/symfony": "dev-master"
+        "symfony/symfony": "dev-master",
+        "doctrine/orm": ">=2.2,<2.4-dev"
     },
 
     "autoload": {

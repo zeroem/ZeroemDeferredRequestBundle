@@ -2,6 +2,9 @@
 
 namespace Zeroem\DeferredRequestBundle\Command;
 
+use Zeroem\DeferredRequestBundle\DeferEvents;
+use Zeroem\DeferredRequestBundle\Event\ProcessedRequestEvent;
+
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,6 +40,11 @@ class ProcessCommand extends ContainerAwareCommand
     );
 
     $em->flush();
+
+    $this->getContainer()->get('event_dispatcher')->dispatch(
+      DeferEvents::PROCESSED,
+      new ProcessedRequestEvent($entity)
+    );
 
     $kernel->terminate($entity->getRequest(),$entity->getResponse());
   }

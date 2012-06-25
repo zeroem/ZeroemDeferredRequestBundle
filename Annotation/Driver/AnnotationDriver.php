@@ -3,24 +3,36 @@
 namespace Zeroem\DeferredRequestBundle\Annotation\Driver;
 
 use Zeroem\DeferredRequestBundle\Annotation\Defer;
-use Zeroem\DeferredRequestBundle\Controller\DeferController;
+use Zeroem\DeferredRequestBundle\Exception\AcceptedException;
+use Zeroem\DeferredRequestBundle\DeferEvents;
+use Zeroem\DeferredRequestBundle\Response\ResponseBuilderInterface;
+use Zeroem\DeferredRequestBundle\Event\DeferredRequestEvent;
+use Zeroem\DeferredRequestBundle\Persistence\PersistenceInterface;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-
 use Doctrine\Common\Annotations\Reader;
 
 class AnnotationDriver
 {
   private $reader;
-  private $controller;
+  private $dispatcher;
+  private $responseBuilder;
+  private $persister;
 
   private $disabled = false;
   private $disabledForNextOnly = false;
 
-  public function __construct(Reader $reader, DeferController $controller)
+  public function __construct(
+    Reader $reader,
+    EventDispatcherInterface $dispatcher,
+    PersistenceInterface $persister,
+    ResponseBuilderInterface $responseBuilder)
   {
     $this->reader = $reader;
-    $this->controller = $controller;
+    $this->dispatcher = $dispatcher;
+    $this->persister = $persister;
+    $this->responseBuilder = $responseBuilder;
   }
 
   /**
@@ -28,25 +40,35 @@ class AnnotationDriver
    */
   public function onKernelController(FilterControllerEvent $event)
   {
-    if(!$this->isDisabled()) {
-      $controller = $event->getController();
-    
-      if(is_callable($controller)) {
-        $object = new \ReflectionObject($controller[0]);
-        $method = $object->getMethod($controller[1]);
-
-        $defer = $this->hasDeferAnnotation($this->reader->getClassAnnotations($object));
-        if(!$defer) {
-          $defer = $this->hasDeferAnnotation($this->reader->getMethodAnnotations($method));
-        }
-
-        if($defer) {
-          $event->setController($this->getDeferController());
-        }
-      }
+    if($this->isDisabled()) {
+      return;
     }
 
     $this->disabledForNextOnly = false;
+
+    $controller = $event->getController();
+    
+    if(is_callable($controller)) {
+      $defer = $this->getDeferAnnotation($controller);
+      if($defer !== false) {
+        
+        $entity = $this->persister->persist($event->getRequest());
+        
+        $this->dispatcher->dispatch(
+          DeferEvents::DEFERRED,
+          new DeferredRequestEvent(
+            $entity,
+            $controller
+          )
+        );
+          
+        throw new AcceptedException(
+          $this->responseBuilder->makeBody($entity),
+          null,
+          $this->responseBuilder->makeHeaders($entity)
+        );
+      }
+    }
   }
 
   /**
@@ -72,26 +94,38 @@ class AnnotationDriver
    */
   public function disableNextRequest() {
     $this->disabledForNextOnly = true;
-  }
-
-  private function hasDeferAnnotation($annotations) {
-    foreach ($annotations as $annotation) {
-      if($annotation instanceof Defer) {
-        return true;
-      }
-    }
-
-    return false;
+    return $this;
   }
 
   private function isDisabled() {
     return $this->disabled || $this->disabledForNextOnly;
   }
 
-  public function getDeferController($container=null) {
-    return array(
-      $this->controller,
-      "deferRequest"
-    );
+  private function persistRequest($httpRequest) {
+    $request = new Request();
+    $request->setRequest($httpRequest);
+
+    $this->entityManager->persist($request);
+    $this->entityManager->flush();
+
+    return $request;
   }
+
+  private function getDeferAnnotation($controller) {
+    $object = new \ReflectionObject($controller[0]);
+
+    $defer = $this->reader->getClassAnnotation($object, 'Zeroem\DeferredRequestBundle\Annotation\Defer');
+
+    if(!isset($defer)) {
+      $method = $object->getMethod($controller[1]);
+      $defer = $this->reader->getMethodAnnotation($method,'Zeroem\DeferredRequestBundle\Annotation\Defer');
+    }
+
+    if(!isset($defer)) {
+      return false;
+    }
+
+    return $defer;
+  }
+
 }
