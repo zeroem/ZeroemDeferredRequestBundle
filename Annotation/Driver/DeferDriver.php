@@ -11,6 +11,7 @@ use Zeroem\DeferredRequestBundle\Persistence\PersistenceInterface;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpFoundation\Request as HttpRequest;
 use Doctrine\Common\Annotations\Reader;
 
 class DeferDriver
@@ -50,10 +51,10 @@ class DeferDriver
     
     if(is_callable($controller)) {
       $defer = $this->getDeferAnnotation($controller);
-      if($defer !== false) {
-        
+
+      if($this->canDefer($defer, $event->getRequest())) {
         $entity = $this->persister->persist($event->getRequest());
-        
+       
         $this->dispatcher->dispatch(
           DeferEvents::DEFERRED,
           new DeferredRequestEvent(
@@ -101,16 +102,6 @@ class DeferDriver
     return $this->disabled || $this->disabledForNextOnly;
   }
 
-  private function persistRequest($httpRequest) {
-    $request = new Request();
-    $request->setRequest($httpRequest);
-
-    $this->entityManager->persist($request);
-    $this->entityManager->flush();
-
-    return $request;
-  }
-
   private function getDeferAnnotation($controller) {
     $object = new \ReflectionObject($controller[0]);
 
@@ -128,4 +119,13 @@ class DeferDriver
     return $defer;
   }
 
+  private function canDefer(Defer $annotation, HttpRequest $request) {
+    if($annotation !== false) {
+      if($annotation->isDeferredMethod($request->getMethod())) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
