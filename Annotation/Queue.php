@@ -2,6 +2,9 @@
 
 namespace Zeroem\DeferredRequestBundle\Annotation;
 
+use Doctrine\Common\Annotations\Annotation\Annotation;
+use Doctrine\Common\Annotations\Annotation\Target;
+
 /**
  * @Annotation
  * @Target({"METHOD","CLASS"})

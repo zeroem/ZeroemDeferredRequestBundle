@@ -1,5 +1,5 @@
 services:
-  defer_request_annotation_driver:
+  defer_request_defer_annotation_driver:
     class: Zeroem\DeferredRequestBundle\Annotation\Driver\DeferDriver
     tags: [{name: kernel.event_listener, event: kernel.controller, method: onKernelController}]
     arguments:
@@ -7,6 +7,13 @@ services:
       - @event_dispatcher
       - @defer_request_persister
       - @defer_response_builder
+
+  defer_request_queue_annotation_driver:
+    class: Zeroem\DeferredRequestBundle\Annotation\Driver\QueueDriver
+    tags: [{name: kernel.event_listener, event:deferred-request.deferred, method: onDefer}]
+    arguments:
+      - @annotation_reader
+      - @defer_request_queue_manager
 
   defer_response_builder:
     class: Zeroem\DeferredRequestBundle\Response\ResponseBuilder
