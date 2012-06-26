@@ -1,25 +1,29 @@
 {
-    "name": "zeroem/deferred-request-bundle",
-    "description": "Utilities for deferring request processing to some point in the future",
-    "keywords": ["defer", "request", "bundle"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Darrell Hamilton",
-            "email": "darrell.noice@gmail.com"
-        }
-    ],
+  "name": "zeroem/deferred-request-bundle",
+  "description": "Utilities for deferring request processing to some point in the future",
+  "keywords": ["defer", "request", "bundle"],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Darrell Hamilton",
+      "email": "darrell.noice@gmail.com"
+    }
+  ],
 
-    "require": {
-        "symfony/symfony": "dev-master",
-        "doctrine/orm": ">=2.2,<2.4-dev"
-    },
+  "require": {
+    "symfony/symfony": "dev-master"
+  },
 
-    "autoload": {
-        "psr-0": {
-            "Zeroem\\DeferredRequestBundle": ""
-        }
-    },
+  "suggest": {
+    "zeroem/deferred-request-bundle/persister": "A virtual package providing the persistence implementaiton.",
+    "zeroem/deferred-request-bundle/queuer": "A virtual package providing the queuing implementation"
+  },
 
-    "target-dir": "Zeroem/DeferredRequestBundle"
+  "autoload": {
+    "psr-0": {
+      "Zeroem\\DeferredRequestBundle": ""
+    }
+  },
+
+  "target-dir": "Zeroem/DeferredRequestBundle"
 }
