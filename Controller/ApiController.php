@@ -21,7 +21,7 @@ class ApiController extends Controller
       // modify cache headers as the response will never change
       $response->setPublic();
       $response->setMaxAge(600);
-      $response->setLastModified($entity->getFinished());
+      $response->setLastModified($entity->getFinishedDate());
       $response->isNotModified($this->getRequest());
 
       return $response;

@@ -27,4 +27,19 @@ interface DeferredRequestInterface
    * @return Symfony\Component\HttpFoundation\Response
    */
   function getResponse();
+
+
+  /**
+   * Date the request was deferred
+   *
+   * @return \DateTime
+   */
+  function getCreatedDate();
+
+  /**
+   * Date the response was generated
+   *
+   * @return \DateTime
+   */
+  function getFinishedDate();
 }
