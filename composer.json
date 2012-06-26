@@ -1,7 +1,8 @@
 {
   "name": "zeroem/deferred-request-bundle",
   "description": "Utilities for deferring request processing to some point in the future",
-  "keywords": ["defer", "request", "bundle"],
+  "type": "symfony-bundle",
+  "keywords": ["defer", "request", "bundle", "http"],
   "license": "MIT",
   "authors": [
     {
@@ -11,12 +12,18 @@
   ],
 
   "require": {
-    "symfony/symfony": "dev-master"
+    "symfony/symfony": "dev-master",
+    "deferred-request-persister": "*",
+    "deferred-request-queue-manager": "*"
+  },
+
+  "require-dev": {
+    "deferred-request-dev-package": "*"
   },
 
   "suggest": {
-    "zeroem/deferred-request-bundle/persister": "A virtual package providing the persistence implementaiton.",
-    "zeroem/deferred-request-bundle/queuer": "A virtual package providing the queuing implementation"
+    "zeroem/deferred-request-orm-persister-bundle": "A virtual package providing an implementation of deferred-request-persister.",
+    "zeroem/deferred-request-rabbitmq-queue-bundle": "A virtual package providing an implementation of deferred-request-queue-manager."
   },
 
   "autoload": {
@@ -25,5 +32,23 @@
     }
   },
 
-  "target-dir": "Zeroem/DeferredRequestBundle"
+  "target-dir": "Zeroem/DeferredRequestBundle",
+
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "deferred-request-dev-package",
+	"version": "0.0.1",
+	"provide": {
+	  "deferred-request-persister": "*",
+	  "deferred-request-queue-manager": "*"
+	},
+	"dist": {
+	  "type": "file",
+	  "url": "http://www.example.org/"
+	}
+      }
+    }
+  ]
 }
